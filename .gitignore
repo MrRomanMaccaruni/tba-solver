@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+# macos
+.DS_Store
+
+# output
+*.png
+*.csv
+examples/*/*.txt
+
+
