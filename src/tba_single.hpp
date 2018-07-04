@@ -68,7 +68,7 @@ public:
     error = 1;
     r = r_;
     c = 0;
-    x_max= ( r < 1e-2 ? 2.*abs(log(2/r)) : xmax );
+    x_max= ( r < 1e-2 ? 2.*std::abs(log(2/r)) : xmax );
     x_min = -x_max;
     dx = (x_max-x_min)/(Nstep-1.);
     for(int i=0; i<Nstep; i++) x[i] = x_min+i*dx;
@@ -99,7 +99,7 @@ public:
     for(int i=0; i<2*Nstep-1; i++)
     {
       xi = 2.*x_min + i*dx;
-      if( abs(xi) < 1E-25 ) xi = 1E-10;
+      if( std::abs(xi) < 1E-25 ) xi = 1E-10;
       phi[i] = sqrt(3.)/M_PI*sinh(2.*xi)/sinh(3.*xi);
     }
   }
@@ -120,7 +120,7 @@ public:
         eps[i] = nu[i] + dx*temp_sum;
         L[i] = log(1+exp(-eps[i]));
       }
-      error = abs(eps[Nstep/2]-eps_old_0);
+      error = std::abs(eps[Nstep/2]-eps_old_0);
       eps_old_0 = eps[Nstep/2];
       iter++;
     } while(error > PRECISION);
