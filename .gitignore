@@ -38,6 +38,8 @@
 *.png
 *.csv
 examples/*/*.txt
+examples/ex01_leeyang/ex01_leeyang
+examples/ex02_adet/ex02_adet
 build/
 
 
