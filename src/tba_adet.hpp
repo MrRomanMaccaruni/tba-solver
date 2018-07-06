@@ -24,9 +24,17 @@ public:
 
   ~tba_adet() {}                                                             // default destructor
 
-  tba_adet(const tba_adet &)                                                 // copy constructor
+  tba_adet(const tba_adet &adet)                                             // copy constructor
   {
-
+    Nstep = adet.Nstep;
+    Nrank = adet.Nrank;
+    iter  = adet.iter;
+    error = adet.error;
+    x     = adet.x;
+    eps   = adet.eps;
+    L     = adet.L;
+    nu    = adet.nu;
+    phi   = adet.phi;
   }
 
   tba_adet(int Ns, char Alg, int Rank, int Index)                            // step size constructor
@@ -54,14 +62,16 @@ public:
     }
   }
 
-  tba_adet(std::string)                                                      // file parsing constructor
+  void operator=(const tba_adet &adet)                                       // assignement operator
   {
-    // TODO - file parsing constructor
-  }
-
-  void operator=(const tba_adet &)                                           // assignement operator
-  {
-    // TODO - overload assignement operator
+    Nstep = adet.Nstep;
+    iter  = adet.iter;
+    error = adet.error;
+    x     = adet.x;
+    eps   = adet.eps;
+    L     = adet.L;
+    nu    = adet.nu;
+    phi   = adet.phi;
   }
 
   // Methods

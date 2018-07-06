@@ -1,10 +1,10 @@
 // Copyright Alessandro Fabbri 2015
 
+#include <cmath>
 #include <tba.hpp>
-#include <utils.hpp>
 
 /*
- *  Lee-Yang TBA class with full features
+ *  Single TBA class with full features
  */
 enum
 {
@@ -166,7 +166,7 @@ public:
 };
 
 /*
- *  C-Function Lee-Yang class for automated evaluation of c(r)
+ *  C-Function single class for automated evaluation of c(r)
  */
 template<int TBA_MODEL>
 class cfunc_single{
