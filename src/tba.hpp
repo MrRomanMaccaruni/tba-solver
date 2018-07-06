@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream>
 
-#define PRECISION 1e-15
+#define PRECISION      1e-15
 
 #ifndef M_PI
 #define M_PI           3.14159265358979323846

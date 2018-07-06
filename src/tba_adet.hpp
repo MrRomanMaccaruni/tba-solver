@@ -12,7 +12,7 @@ public:
   // Additional parameters
   char alg_type;                                                             // A,D,E,T type switch
   int Nrank;                                                                 // number of nodes
-  int mass_pos;                                                              // position of massive node
+  int mass_pos;                                                              // index of massive node
   // Functions
   double ** eps;                                                             // pseudoenergy
   double ** L;                                                               // log(1 + e^-epsilon)
@@ -75,13 +75,13 @@ public:
   }
 
   // Methods
-  void init_all(double xmax, double rr)                                      // initial operations, divided into:
+  void init_all(double xmax, double r_)                                      // initial operations, divided into:
   {
-    iter = 0;
+    iter  = 0;
     error = 1;
-    r = rr;
-    c = 0;
-    x_max= ( r < 1e-2 ? 2.*std::abs(std::log(2/r)) : xmax );
+    r     = r_;
+    c     = 0;
+    x_max = ( r < 1e-2 ? 2.*std::abs(std::log(2/r)) : xmax );
     x_min = -x_max;
     dx = (x_max-x_min)/(Nstep-1.);
     for(int i=0; i<Nstep; ++i) x[i] = x_min+i*dx;
@@ -110,7 +110,7 @@ public:
         for(int a=0; a<Nrank; ++a)
         {
           if(a==0) z[a] = 0;
-          else     z[a]= std::sin((a+2)*alpha)*std::sin(a*alpha)/std::sin((Nrank+1)*alpha)/std::sin(alpha);
+          else     z[a] = std::sin((a+2)*alpha)*std::sin(a*alpha)/std::sin((Nrank+1)*alpha)/std::sin(alpha);
         }
         break;
       }
@@ -149,8 +149,8 @@ public:
     {
       for(int i=0; i<Nstep; ++i)
       {
-        if(a==mass_pos-1) nu[a][i] = r*std::cosh(x[i]);
-        else              nu[a][i] = 0;
+        if(a==mass_pos) nu[a][i] = r*std::cosh(x[i]);
+        else            nu[a][i] = 0;
         eps[a][i] = nu[a][i];
         L[a][i] = std::log(1+std::exp(-eps[a][i]));
       }
@@ -166,23 +166,23 @@ public:
         for(int a=0; a<Nrank; ++a) temp_sum[a]=0;
         for(int j=0; j<Nstep; ++j)
         {
-          int ij = Nstep-1+abs(i-j);
-          temp_sum[0] += phi[ij]*(L[1][j]-log(1+z[1]));
+          int ij = Nstep-1+std::abs(i-j);
+          temp_sum[0] += phi[ij]*(L[1][j]-std::log(1+z[1]));
           for(int a=1; a<Nrank-1; ++a)
           {
-            temp_sum[a] += phi[ij]*(L[a-1][j]+L[a+1][j]-log(1+z[a-1])-log(1+z[a+1]));
+            temp_sum[a] += phi[ij]*(L[a-1][j]+L[a+1][j]-std::log(1+z[a-1])-std::log(1+z[a+1]));
           }
-          temp_sum[Nrank-1] += phi[ij]*(L[Nrank-2][j]-log(1+z[Nrank-2]));
+          temp_sum[Nrank-1] += phi[ij]*(L[Nrank-2][j]-std::log(1+z[Nrank-2]));
         }
-        eps[0][i] =.5*(eps[0][i] + nu[0][i] - dx*temp_sum[0]-.5*log(1+z[1]));
+        eps[0][i] =.5*(eps[0][i] + nu[0][i] - dx*temp_sum[0]-.5*std::log(1+z[1]));
         for(int a=1; a<Nrank-1; ++a)
         {
-          eps[a][i] =.5*(eps[a][i] + nu[a][i] - dx*temp_sum[a]-.5*log(1+z[a-1])-.5*log(1+z[a+1]));
+          eps[a][i] =.5*(eps[a][i] + nu[a][i] - dx*temp_sum[a]-.5*std::log(1+z[a-1])-.5*std::log(1+z[a+1]));
         }
-        eps[Nrank-1][i] =.5*(eps[Nrank-1][i] + nu[Nrank-1][i] - dx*temp_sum[Nrank-1]-.5*log(1+z[Nrank-2]));
-        for(int a=0; a<Nrank; ++a) L[a][i] = log(1+exp(-eps[a][i]));
+        eps[Nrank-1][i] =.5*(eps[Nrank-1][i] + nu[Nrank-1][i] - dx*temp_sum[Nrank-1]-.5*std::log(1+z[Nrank-2]));
+        for(int a=0; a<Nrank; ++a) L[a][i] = std::log(1+std::exp(-eps[a][i]));
       }
-      error = fabs(eps[0][(Nstep+1)/2]-temp0);
+      error = std::abs(eps[0][(Nstep+1)/2]-temp0);
       temp0 = eps[0][(Nstep+1)/2];
       ++iter;
     } while( error > PRECISION );
@@ -192,7 +192,7 @@ public:
   {
     for(int i=0; i<Nstep-1; ++i)
       c += .5*(nu[mass_pos][i]*L[mass_pos][i]+nu[mass_pos][i+1]*L[mass_pos][i+1]);
-    c=c*dx*3/(M_PI*M_PI);
+    c *= dx*3/(M_PI*M_PI);
 
     report << alg_type << Nrank << " TBA report" << std::endl
            << "Iter  = " << iter << std::endl
