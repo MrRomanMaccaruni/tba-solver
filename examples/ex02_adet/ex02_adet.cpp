@@ -6,7 +6,7 @@ using namespace std;
 int main(){
 	cout << "*********** ADET TBA EXAMPLE ***********" << endl;
 
-	tba_adet adet(1000, 'A', 5, 1);
+	tba_adet adet(1000, 'A', 5, 2);
 	adet.init_all(30, 1e-8);
 	adet.show_setup();
 	adet.save_setup("setup.txt");
