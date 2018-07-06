@@ -71,7 +71,7 @@ public:
     x_max= ( r < 1e-2 ? 2.*std::abs(log(2/r)) : xmax );
     x_min = -x_max;
     dx = (x_max-x_min)/(Nstep-1.);
-    for(int i=0; i<Nstep; i++) x[i] = x_min+i*dx;
+    for(int i=0; i<Nstep; ++i) x[i] = x_min+i*dx;
 
     setup << "Lee-Yang TBA setup" << std::endl
           << "Nstep   = " << Nstep << std::endl
@@ -79,13 +79,13 @@ public:
           << "dx      = " << dx << std::endl
           << "r       = " << r << std::endl;
 
-    init_kernels();
     init_guess();
+    init_kernels();
   }
 
   void init_guess()                          // initial guess for epsilon
   {
-    for(int i=0; i<Nstep; i++)
+    for(int i=0; i<Nstep; ++i)
     {
       nu[i] = r*cosh(x[i]);
       eps[i] = nu[i];
@@ -96,7 +96,7 @@ public:
   void init_kernels()                        // convolution kernel init
   {
     double xi;
-    for(int i=0; i<2*Nstep-1; i++)
+    for(int i=0; i<2*Nstep-1; ++i)
     {
       xi = 2.*x_min + i*dx;
       if( std::abs(xi) < 1E-25 ) xi = 1E-10;
@@ -109,10 +109,10 @@ public:
     double eps_old_0=eps[Nstep/2];
     double temp_sum=0;
     do{
-      for(int i=0; i<Nstep; i++)
+      for(int i=0; i<Nstep; ++i)
       {
         temp_sum=0;
-        for(int j=0; j<Nstep; j++)
+        for(int j=0; j<Nstep; ++j)
         {
           int ij = Nstep-1+abs(i-j);
           temp_sum += phi[ij]*L[j];
@@ -122,13 +122,13 @@ public:
       }
       error = std::abs(eps[Nstep/2]-eps_old_0);
       eps_old_0 = eps[Nstep/2];
-      iter++;
+      ++iter;
     } while(error > PRECISION);
   }
 
   void evaluate_c()                          // evaluation of the c-function
   {
-    for(int i=0;i<Nstep;i++)
+    for(int i=0; i<Nstep; ++i)
       c += cosh(x[i])*L[i];
     c*=dx*6/M_PI/M_PI*r;
 
@@ -148,12 +148,11 @@ public:
     }
     double xi;
     out << "index;x;phi" << std::endl;
-    for(int i=0; i<2*Nstep-1; i++)
+    for(int i=0; i<2*Nstep-1; ++i)
     {
       xi = 2.*x_min + i*dx;
       out << i << ";" << xi << ";" << phi[i] << std::endl;
     }
-
     out.close();
   }
 
@@ -161,7 +160,7 @@ public:
   {
     std::ofstream out(filename);
     out << "index;x;eps;L" << std::endl;
-    for(int i=0; i<Nstep; i++) out << i << ";" << x[i] << ";" << eps[i] << ";" << L[i] << std::endl;
+    for(int i=0; i<Nstep; ++i) out << i << ";" << x[i] << ";" << eps[i] << ";" << L[i] << std::endl;
     out.close();
   }
 };
@@ -189,9 +188,9 @@ public:
     c = new double[Nr];
     tba_ly = new tba_single<TBA_MODEL>[Nr];
     double dr = (r_max-r_min)/(Nr-1);
-    for(int i=0; i<Nr-1; i++) r[i] = r_min + i*dr;
+    for(int i=0; i<Nr-1; ++i) r[i] = r_min + i*dr;
     r[Nr-1] = r_max;
-    for(int i=0; i<Nr; i++)
+    for(int i=0; i<Nr; ++i)
     {
       tba_ly[i] = tba_single<TBA_MODEL>(Ns);
       tba_ly[i].init_all(30,r[i]);
@@ -204,11 +203,11 @@ public:
     r = new double[Nr];
     c = new double[Nr];
     tba_ly = new tba_single<TBA_MODEL>[Nr];
-    for(int i=0; i<Nr-1; i++){
+    for(int i=0; i<Nr-1; ++i){
       r[i] = r_min + i*dr;
     }
     r[Nr-1] = r_max;
-    for(int i=0; i<Nr-1; i++){
+    for(int i=0; i<Nr-1; ++i){
       tba_ly[i].init_all(30,r[i]);
     }
   }
@@ -216,7 +215,7 @@ public:
   // Methods
   void evaluate_cfun()                                         // solves the tba's and evaluates c(r)
   {
-    for(int i=0; i<Nr; i++)
+    for(int i=0; i<Nr; ++i)
     {
       tba_ly[i].solve();
       tba_ly[i].evaluate_c();
@@ -228,7 +227,7 @@ public:
   {
     std::ofstream out(filename);
     out << "index;r;c" << std::endl;
-    for(int i=0; i<Nr; i++) out << i << ";" << r[i] << ";" << c[i] << std::endl;
+    for(int i=0; i<Nr; ++i) out << i << ";" << r[i] << ";" << c[i] << std::endl;
     out.close();
   }
 

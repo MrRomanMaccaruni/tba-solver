@@ -8,7 +8,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 
 # examples
 add_custom_target(examples)
-file(GLOB ex_src ${CMAKE_SOURCE_DIR}/examples/*lee*/*lee*.cpp)
+file(GLOB ex_src ${CMAKE_SOURCE_DIR}/examples/*/*.cpp)
 foreach(ex ${ex_src})
   get_filename_component(tag ${ex} NAME_WE)
   add_executable(${tag} ${ex})

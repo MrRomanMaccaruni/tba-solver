@@ -38,5 +38,6 @@
 *.png
 *.csv
 examples/*/*.txt
+build/
 
 
